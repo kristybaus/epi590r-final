@@ -1,0 +1,110 @@
+---
+title: "Languages of Africa"
+author: "Kristy Baus"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+library(gtsummary)
+
+africa <- read_csv(
+  "https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2026/2026-01-13/africa.csv"
+)
+```
+
+## Data
+
+The data used in this analysis come from the TidyTuesday project and describe popular languages spoken across Africa. The dataset was curated from the Wikipedia Languages of Africa page and contains information on language name, language family, number of native speakers, and country.
+
+The dataset contains `r nrow(africa)` observations and `r n_distinct(africa$language)` unique languages.
+
+## Descriptive Statistics
+
+```{r}
+#| label: tbl-summary
+#| tbl-cap: "Number of native speakers by language family"
+
+summary_table <- africa |>
+  tbl_summary(
+    by = family,
+    include = native_speakers,
+    statistic = all_continuous() ~ "{median} ({p25}, {p75})",
+    digits = all_continuous() ~ 0,
+    label = list(
+      native_speakers ~ "Number of native speakers"
+    )
+  ) |>
+  add_overall() |>
+  bold_labels()
+
+summary_table
+```
+
+@tbl-summary summarizes the distribution of native speakers across
+language families. Overall, the median number of native speakers was
+`r inline_text(summary_table, variable = native_speakers, column = "stat_0", pattern = "{median}")`.
+
+## Regression
+
+A linear regression model was fit to compare the log-transformed number of native speakers across language families.
+
+```{r}
+#| label: tbl-regression
+#| tbl-cap: "Linear regression of log native speakers by language family"
+
+model1 <- lm(
+  log(native_speakers) ~ family,
+  data = africa
+)
+
+model1 |>
+  tbl_regression(
+    label = list(
+      family ~ "Language family"
+    )
+  ) |>
+  bold_labels()
+
+```
+
+The regression results are presented in @tbl-regression.
+
+```{r}
+#| label: fig-speakers
+#| fig-cap: "Distribution of the log-transformed number of native speakers."
+
+ggplot(africa, aes(x = log(native_speakers))) +
+  geom_histogram(bins = 30) +
+  labs(
+    title = "Distribution of Native Speakers",
+    x = "Log Number of Native Speakers",
+    y = "Count"
+  )
+```
+
+As shown in @fig-speakers, log transformation reduces the strong right-skew that is present in the untransformed number of native speakers.
+
+## Functions
+
+The following function calculates the median of a numeric variable within groups.
+
+```{r}
+median_by_group <- function(data, variable, group) {
+  data |>
+    summarize(
+      median = median({{ variable }}, na.rm = TRUE),
+      .by = {{ group }}
+    )
+}
+
+median_by_group(
+  africa,
+  native_speakers,
+  family
+)
+```
