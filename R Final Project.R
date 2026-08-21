@@ -19,3 +19,20 @@ africa |>
 	add_overall() |>
 	bold_labels() |>
 	modify_caption("**Table 1. Native speakers by language family**")
+
+#regression table
+model1 <- lm(
+	log(native_speakers) ~ family,
+	data = africa
+)
+
+model1 |>
+	tbl_regression(
+		label = list(
+			family ~ "Language family"
+		)
+	) |>
+	bold_labels() |>
+	modify_caption(
+		"**Table 2. Linear regression of native speakers by language family**"
+	)
