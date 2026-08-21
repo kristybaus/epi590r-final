@@ -1,8 +1,11 @@
 library(tidyverse)
 library(gtsummary)
+library(here)
 
-#Read in data from github
-africa <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2026/2026-01-13/africa.csv')
+#Read in data
+africa <- read_csv(
+	here("data", "africa.csv")
+)
 
 #descriptive statistics table
 africa |>
