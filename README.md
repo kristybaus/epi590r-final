@@ -29,3 +29,6 @@ To reproduce the analysis:
 The Quarto document reads `data/africa.csv` using the `here` package and performs all data analysis directly from this file.
 
 To examine how changes to the underlying data affect the results, make a minor change to `data/africa.csv`, save the file, and re-render `R Final Project.qmd`. The descriptive statistics, regression results, figure, and inline statistics will be recalculated automatically.
+
+##AI Use
+I used AI minimally for help with debugging my code during the project. 
