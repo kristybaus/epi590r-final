@@ -11,10 +11,11 @@ editor: visual
 
 library(tidyverse)
 library(gtsummary)
+library(here)
 
 africa <- read_csv(
-  "https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2026/2026-01-13/africa.csv"
-)
+  here("data", "africa.csv")
+) 
 ```
 
 ## Data
@@ -45,9 +46,7 @@ summary_table <- africa |>
 summary_table
 ```
 
-@tbl-summary summarizes the distribution of native speakers across
-language families. Overall, the median number of native speakers was
-`r inline_text(summary_table, variable = native_speakers, column = "stat_0", pattern = "{median}")`.
+@tbl-summary summarizes the distribution of native speakers across language families. Overall, the median number of native speakers was `r inline_text(summary_table, variable = native_speakers, column = "stat_0", pattern = "{median}")`.
 
 ## Regression
 
@@ -106,5 +105,25 @@ median_by_group(
   africa,
   native_speakers,
   family
+)
+```
+
+## Saving Histogram
+
+```{r}
+
+speaker_plot <- ggplot(africa, aes(x = log(native_speakers))) +
+  geom_histogram(bins = 30) +
+  labs(
+    title = "Distribution of Native Speakers",
+    x = "Log Number of Native Speakers",
+    y = "Count"
+  )
+
+speaker_plot
+
+ggsave(
+  filename = here("output", "native_speakers_histogram.png"),
+  plot = speaker_plot
 )
 ```
