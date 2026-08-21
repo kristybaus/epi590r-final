@@ -36,3 +36,28 @@ model1 |>
 	modify_caption(
 		"**Table 2. Linear regression of native speakers by language family**"
 	)
+
+#create histogram
+ggplot(africa, aes(x = log(native_speakers))) +
+  geom_histogram(bins = 30) +
+  labs(
+    title = "Distribution of Native Speakers",
+    x = "Log Number of Native Speakers",
+    y = "Count"
+  )
+
+#create a function to calculate median by group
+median_by_group <- function(data, variable, group) {
+	data |>
+		summarize(
+			median = median({{ variable }}, na.rm = TRUE),
+			.by = {{ group }}
+		)
+}
+
+# calculate median native speakers by language family
+median_by_group(
+	africa,
+	native_speakers,
+	family
+)
