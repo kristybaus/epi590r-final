@@ -73,6 +73,9 @@ model1 |>
 
 The regression results are presented in @tbl-regression.
 
+
+## Histogram
+
 ```{r}
 #| label: fig-speakers
 #| fig-cap: "Distribution of the log-transformed number of native speakers."
